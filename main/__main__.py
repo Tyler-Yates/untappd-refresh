@@ -26,12 +26,17 @@ def main():
 
         beers_collection = db[collection_name]
 
-        print(f"Found {beers_collection.count_documents({})} existing beer documents\n")
         util = HtmlUtil(beers_collection)
 
         beer_list = beers_collection.find()
+        beer_ids_to_refresh = []
         for beer in beer_list:
-            util.refresh_beer(beer["id"])
+            beer_ids_to_refresh.append(beer["id"])
+
+        print(f"Refreshing {len(beer_ids_to_refresh)} existing beer documents to refresh\n")
+
+        for beer_id in beer_ids_to_refresh:
+            util.refresh_beer(beer_id)
 
     requests.get(healthcheck_url)
     print(f"Pinged {healthcheck_url}")
